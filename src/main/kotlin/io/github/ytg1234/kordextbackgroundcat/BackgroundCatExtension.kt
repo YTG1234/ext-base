@@ -16,7 +16,7 @@ import io.ktor.client.request.get
  *
  * @param bot The [ExtensibleBot] instance that this extension is installed to.
  */
-class BackgroundCatExtension(bot: ExtensibleBot) : Extension(bot) {
+class BackgroundCatExtension(bot: ExtensibleBot, private val checkFun: (suspend (MessageCreateEvent) -> Boolean)?) : Extension(bot) {
     override val name = "backgroundcat"
 
     /**
@@ -34,7 +34,10 @@ class BackgroundCatExtension(bot: ExtensibleBot) : Extension(bot) {
 
     override suspend fun setup() {
         event<MessageCreateEvent> {
-            check { it.message.author != null && !it.message.author!!.isBot }
+            if (checkFun != null) {
+                check(checkFun)
+            } else check { it.message.author != null && !it.message.author!!.isBot }
+
             action {
                 var rawLink = ""
 
