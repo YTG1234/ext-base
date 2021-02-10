@@ -1,5 +1,6 @@
 package io.github.ytg1234.kordextbackgroundcat
 
+import io.github.ytg1234.kordextbackgroundcat.config.DuplicateBehaviour
 import io.github.ytg1234.kordextbackgroundcat.util.internal.ConfigHolder
 import io.github.ytg1234.kordextbackgroundcat.util.internal.logger
 import io.github.ytg1234.kordextbackgroundcat.util.log.Log
@@ -34,8 +35,11 @@ val processors = mutableMapOf<String, LogProcessorWithOptions>()
 fun addProcessor(id: String, processor: LogProcessorWithOptions) {
     if (id == "") throw IllegalArgumentException("Tried to add a processor for empty ID!")
     if (processors.containsKey(id)) {
-        if (ConfigHolder.failOnDuplicate) throw IllegalArgumentException("Tried to add a processor for ID $id which was already added!")
-        else return
+        when (ConfigHolder.duplicateBehaviour) {
+            DuplicateBehaviour.OVERWRITE -> Unit // NO-OP
+            DuplicateBehaviour.CRASH -> throw IllegalArgumentException("Tried to add a processor for ID $id which was already added!")
+            DuplicateBehaviour.CANCEL -> return
+        }
     }
 
     if (!ConfigHolder.isProcessorEnabled(id)) {

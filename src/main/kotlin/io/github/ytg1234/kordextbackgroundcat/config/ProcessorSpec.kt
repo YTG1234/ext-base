@@ -4,5 +4,5 @@ import com.uchuhimo.konf.ConfigSpec
 
 object ProcessorSpec : ConfigSpec("processors") {
     val disabled by required<List<String>>()
-    val failOnDuplicate by required<Boolean>()
+    val duplicateBehaviour by required<DuplicateBehaviour>()
 }

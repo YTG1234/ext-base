@@ -38,5 +38,5 @@ internal object ConfigHolder {
 
     fun isProcessorEnabled(id: String) = !config[ProcessorSpec.disabled].contains(id)
 
-    val failOnDuplicate get() = config[ProcessorSpec.failOnDuplicate]
+    val duplicateBehaviour get() = config[ProcessorSpec.duplicateBehaviour]
 }
